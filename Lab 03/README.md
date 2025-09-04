@@ -362,3 +362,78 @@ public:
     }
 };
 ```
+
+## Problem: [6. Flatten a Multilevel Linked List](./task05-ConvertBetweenLinkedListTypes.cpp)
+
+**Difficulty:** [Medium]  
+**Problem Link:** [Leetcode 430](https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/description/)
+
+---
+
+### Problem Statement
+
+Each node has:
+• next pointer (normal linked list connection).
+• child pointer (points to another linked list).
+Write a function to flatten the structure so that all nodes appear in a single-level list.
+
+PS: I used a doubly instead as I found a leetcode question that was fairly similar but had doubly in it
+
+---
+
+### Approach
+
+- Traverse over LL
+    - If a node has a child, call flattenHelper
+
+- flattenHelper gets called with start (the node where child starts) & end (the node to which last child's next would point)
+    - Loops over the child LL
+        - if any nested child is found, flattenHelper is called recursively
+    - point tail of child's next to end & start of child's prev to start
+    - return tail of child
+
+- Continue traversal until the list is fully flattened.
+
+---
+
+### Code
+```cpp
+class Solution {
+public:
+    Node* flattenHelper(Node* start, Node* end) { 
+        Node* child = start->child;
+        if(!child) {
+            return start;
+        }
+        Node* prev = nullptr;
+        Node* it = child;
+        while(it) {
+            if(it->child) {
+                it = flattenHelper(it, it->next);
+            }
+            prev = it;
+            it = it->next;
+        }
+        prev->next = end;
+        if (end) {
+            end->prev = prev;
+        }
+        start->next = child;
+        child->prev = start;
+        start->child = nullptr;
+        return prev;
+    }
+
+    Node* flatten(Node* head) {
+        Node* it = head;
+        while(it) {
+            if(it->child) {
+                it = flattenHelper(it, it->next);
+            }
+            it = it->next;
+        }
+        return head;
+    }
+};
+
+```
