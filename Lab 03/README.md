@@ -363,7 +363,7 @@ public:
 };
 ```
 
-## Problem: [6. Flatten a Multilevel Linked List](./task05-ConvertBetweenLinkedListTypes.cpp)
+## Problem: [6. Flatten a Multilevel Linked List](./task06-FlattenAMultilevelLinkedList.cpp)
 
 **Difficulty:** [Medium]  
 **Problem Link:** [Leetcode 430](https://leetcode.com/problems/flatten-a-multilevel-doubly-linked-list/description/)
@@ -433,6 +433,169 @@ public:
             it = it->next;
         }
         return head;
+    }
+};
+
+```
+
+## Problem: [7. LinkedList Cycle](./taskxx-LinkedListCycle.cpp)
+
+**Difficulty:** [Easy]  
+**Problem Link:** [Leetcode 141](https://leetcode.com/problems/linked-list-cycle/description/)
+
+---
+
+### Problem Statement
+
+Given head, the head of a linked list, determine if the linked list has a cycle in it.
+
+There is a cycle in a linked list if there is some node in the list that can be reached again by continuously following the next pointer. Internally, pos is used to denote the index of the node that tail's next pointer is connected to. Note that pos is not passed as a parameter.
+
+Return true if there is a cycle in the linked list. Otherwise, return false.
+
+---
+
+### Approach
+
+- use slow & fast pointer to loop over LL
+    - when slow == fast
+        - return true
+- return false if no loop (fast reaches end)
+
+---
+
+### Code
+```cpp
+class Solution {
+public:
+    bool hasCycle(ListNode *head) {
+        ListNode* slow = head;
+        ListNode* fast = head;
+        while(fast && fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+            if(slow == fast) {
+                return true;
+            }
+        }
+        return false;
+    }
+};
+
+```
+## Problem: [8. Polynomial Arithmetic using LL](./taskxx-PolynomialArithmeticUsingLinkedList.cpp)
+
+**Difficulty:** [Medium]  
+**Problem Link:** [N/A]()
+
+---
+
+### Problem Statement
+
+Represent a polynomial using a linked list.
+ Each node stores (coefficient, exponent).
+ Implement functions for:
+o Polynomial Addition
+o Polynomial Multiplication
+ Example:
+ P1 = 3x^2 + 2x + 1
+ P2 = x^2 + x
+
+---
+
+### Approach
+
+- Addition
+    - Traverse both lists together.
+    - If exponents match → add coefficients.
+    - If one exponent is larger → copy that term.
+    - Append remaining terms at the end.
+- Multiplication
+    - For each term in the first polynomial, multiply it with all terms in the second.
+    - Collect the intermediate polynomial for this round.
+    - Add it into the final result using the addition function.
+
+---
+
+### Code
+```cpp
+class Solution {
+public:
+    // Add two polynomials represented as linked lists
+    PolyNode* addPoly(PolyNode* p1, PolyNode* p2) {
+        if(!p1) {
+            return p2;
+        }
+        if(!p2) {
+            return p1;
+        }
+        PolyNode* result;
+        PolyNode* it1 = p1;
+        PolyNode* it2 = p2;
+        if(it1->exp == it2->exp) {
+            result = new PolyNode(it1->coeff + it2->coeff, it1->exp);
+            it1 = it1->next;
+            it2 = it2->next;
+        } else if(it1->exp > it2->exp) {
+            result = new PolyNode(it1->coeff, it1->exp);
+            it1 = it1->next;
+        } else {
+            result = new PolyNode(it2->coeff, it2->exp);
+            it2 = it2->next;
+        }
+
+        PolyNode* it = result;
+        while (it1 && it2) {
+            if(it1->exp == it2->exp) {
+                it->next = new PolyNode(it1->coeff + it2->coeff, it1->exp);
+                it1 = it1->next;
+                it2 = it2->next;
+            } else if(it1->exp > it2->exp) {
+                it->next = new PolyNode(it1->coeff, it1->exp);
+                it1 = it1->next;
+            } else {
+                it->next = new PolyNode(it2->coeff, it2->exp);
+                it2 = it2->next;
+            }
+            it = it->next;
+        }
+
+        if(it1) {
+            it->next = it1;
+        }
+        if(it2) {
+            it->next = it2;
+        }
+
+        return result;
+    }
+
+    // Multiply two polynomials represented as linked lists
+    PolyNode* multiplyPoly(PolyNode* p1, PolyNode* p2) {
+
+        if(!p1 || !p2) {
+            return nullptr;
+        }
+        PolyNode* it1 = p1;
+        PolyNode* result = nullptr;
+        while(it1) {
+            PolyNode* mul = nullptr;
+            PolyNode* mulIt = nullptr;
+            PolyNode* it2 = p2;
+            while(it2) {
+                if(!mul) {
+                    mul = new PolyNode(it2->coeff * it1->coeff, it2->exp + it1->exp);
+                    mulIt = mul;
+                } else {
+                    mulIt->next = new PolyNode(it2->coeff * it1->coeff, it2->exp + it1->exp);
+                    mulIt = mulIt->next;
+                }
+                it2 = it2->next;
+            }
+            result = addPoly(mul, result);
+            it1 = it1->next;
+        }
+        return result;
     }
 };
 
