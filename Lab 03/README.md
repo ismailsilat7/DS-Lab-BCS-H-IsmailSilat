@@ -223,3 +223,69 @@ public:
     }
 };
 ```
+
+## Problem: [4. Josephus Problem using Circular Linked List](./task03-ReverseNodesInKGroup.cpp)
+
+**Difficulty:** [Medium]  
+**Problem Link:** [LeetCode 1823](https://leetcode.com/problems/find-the-winner-of-the-circular-game/description/)
+
+---
+
+### Problem Statement
+
+Use a circular linked list to solve the Josephus problem:
+• N people stand in a circle, eliminating every k-th person until only one survives.
+• Input: N = 7, k = 3
+• Output: Position of survivor.
+• Hint: Use circular traversal and deletion.
+
+---
+
+### Approach
+
+- Build a circular linked list of n nodes (each representing a person).
+- Start traversal from the head with a prev pointer to track the node before the current one.
+    - Move (k-1) steps each time to find the k-th person.
+    - Remove the k-th person by linking prev->next to it->next.
+    - Continue until only one node remains.
+- Return the value of the survivor.
+
+---
+
+### Code
+```cpp
+class Solution {
+public:
+    int josephus(int n, int k) {
+
+        // create circular linkedlist
+        ListNode* head = new ListNode(1);
+        ListNode* it = head;
+        for(int i = 2; i <= n; i++) {
+            it->next = new ListNode(i);
+            it = it->next;
+        }
+        it->next = head;
+
+        // loop & eliminate every kth element
+        ListNode* prev = it;
+        it = head;
+        while(it != it->next) {
+            for (int i = 0; i < k - 1; i++)
+            {
+                prev = it;
+                it = it->next;
+            }
+            prev->next = it->next;
+            ListNode* temp = it;
+            it = it->next;
+            delete temp;
+        }
+
+        int returnVal = it->val;
+        delete it;
+        return returnVal;
+    }
+};
+
+```
