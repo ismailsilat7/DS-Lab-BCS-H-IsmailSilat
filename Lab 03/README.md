@@ -143,3 +143,83 @@ public:
     }
 };
 ```
+
+## Problem: [3. Reverse in Groups of K](./task03-ReverseNodesInKGroup.cpp)
+
+**Difficulty:** [Hard]  
+**Problem Link:** [LeetCode 25](https://leetcode.com/problems/reverse-nodes-in-k-group/description/)
+
+---
+
+### Problem Statement
+
+Given the head of a linked list, reverse the nodes of the list k at a time, and return the modified list.
+
+k is a positive integer and is less than or equal to the length of the linked list. If the number of nodes is not a multiple of k then left-out nodes, in the end, should remain as it is.
+
+You may not alter the values in the list's nodes, only nodes themselves may be changed.
+
+---
+
+### Approach
+
+- Start with finding the length of the LL
+- Use a dummy node to avoid special case for insertion at head
+- Keep track of prevGroupEnd (node after which the new group will start - dummy node being the initial one)
+- Loop length/k times (number of complete groups)
+    - keep track of groupStart (becomes tail of the group after reversal)
+    - Reverse k nodes
+    - Connect the prevGroupEnd with the new head of reversed Group
+    - Connect groupStart (now tail) with nextGroup
+    - set prevGroupEnd (to groupStart) so that it can be used for next loop
+- return dummy node's next
+
+---
+
+### Code
+```cpp
+class Solution {
+public:
+    ListNode* reverseKGroup(ListNode* head, int k) {
+        // handle edge cases
+        if(k == 1 || !head || !head->next) {
+            return head;
+        }
+
+        // count nodes
+        ListNode* it = head;
+        int length = 0;
+        while(it) {
+            it = it->next;
+            length++;
+        }
+        //use temp dummy node to simplify linking (avoids special case for head)
+        ListNode tempHead(0);
+        tempHead.next = head;
+        ListNode* prevGroupEnd = &tempHead;
+        it = head;
+        for(int i = 0; i < length/k; i++) {
+            // keep track of group start to make it tail of prevEnd
+            ListNode* groupStart = it;
+            ListNode* prev = nullptr;
+
+            // Reverse group
+            for(int j = 0; j < k; j++) {
+                ListNode* next = it->next;
+                it->next = prev;
+                prev = it;
+                it = next;
+            }
+
+            // connect end of prevGroup to newHead of current group (at prev)
+            prevGroupEnd->next = prev;
+            // connect end of current group to start of next group
+            groupStart->next = it;
+
+            // update groupEnd for next group reversal
+            prevGroupEnd = groupStart;
+        }
+        return tempHead.next;
+    }
+};
+```
