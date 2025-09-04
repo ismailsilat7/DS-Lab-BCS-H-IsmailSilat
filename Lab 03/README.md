@@ -224,7 +224,7 @@ public:
 };
 ```
 
-## Problem: [4. Josephus Problem using Circular Linked List](./task03-ReverseNodesInKGroup.cpp)
+## Problem: [4. Josephus Problem using Circular Linked List](./task04-JosephusProblem.cpp)
 
 **Difficulty:** [Medium]  
 **Problem Link:** [LeetCode 1823](https://leetcode.com/problems/find-the-winner-of-the-circular-game/description/)
@@ -288,4 +288,77 @@ public:
     }
 };
 
+```
+
+## Problem: [5. Convert Between Linked List Types](./task05-ConvertBetweenLinkedListTypes.cpp)
+
+**Difficulty:** [Easy]  
+**Problem Link:** [N/A]()
+
+---
+
+### Problem Statement
+
+Implement functions for conversion:
+1. Convert a singly linked list into a doubly linked list.
+2. Convert a singly linked list into a circular linked list.
+• Demonstrate both conversions with sample input lists.
+
+---
+
+### Approach
+
+- Singly to Doubly
+    - Start with assigning the head to doublyLL
+    - Traverse over Singly & Assign same value newly created node to next 
+        - simultaneoulsy, Link each new node’s prev to the previous node and update next
+
+- Singly to Circular
+    - Go to the tail of singly by traversing over singly
+    - set tail->next to head to form a loop 
+
+
+---
+
+### Code
+```cpp
+class Solution {
+public:
+    // 1. Convert singly linked list to doubly linked list
+    DoublyListNode* convertToDoubly(ListNode* head) {
+        // handle edge case
+        if (!head) {
+            return nullptr;
+        }
+        // create head for doubly LL with same val  as head for singly
+        DoublyListNode* dHead = new DoublyListNode(head->val);
+
+        // create iterators for doubly & singly
+        DoublyListNode* dIt = dHead;
+        ListNode* it = head->next;
+
+        while(it) {
+            dIt->next = new DoublyListNode(it->val);
+            dIt->next->prev = dIt;
+            dIt = dIt->next;
+            it = it->next;
+        }
+        return dHead;
+    }
+
+    // 2. Convert singly linked list to circular linked list
+    ListNode* convertToCircular(ListNode* head) {
+        // handle edge case
+        if (!head) {
+            return nullptr;
+        }
+        // just loop till the end & link last node with head
+        ListNode* it = head;
+        while(it->next) {
+            it = it->next;
+        }
+        it->next = head;
+        return head;
+    }
+};
 ```
