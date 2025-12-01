@@ -12,7 +12,7 @@ void merge(int arr[], int left, int mid, int right) {
     for(int i = 0; i < n2; i++) {
         rightArr[i] = arr[i + mid + 1];
     }
-    int i = 0; int j = 0; int k = 0;
+    int i = 0; int j = 0; int k = left;
     while(i < n1 && j < n2) {
         if(leftArr[i] < rightArr[i]) {
             arr[k++] = leftArr[i++];
