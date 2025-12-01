@@ -51,6 +51,46 @@ public:
             i = smallest;
         }
     }
+
+    void heapifyUp(int i) {
+        while(i > 1 && arr[i].year < arr[i/2].year) {
+            swap(arr[i], arr[i/2]);
+            i /= 2;
+        }
+    }
+
+    void heapifyDown(int i) {
+        while(true) {
+            int left = 2 * i;
+            int right = 2 * i + 1;
+            if(left > n) break;
+
+            int smallest = left;
+            if(right <= n && arr[right].year < arr[left].year) {
+                smallest = right;
+            }
+
+            if(arr[i].year <= arr[smallest].year) break;
+
+            swap(arr[i], arr[smallest]);
+            i = smallest;
+        }
+    }
+
+    void buildHeap(Book a[], int k) {
+        if(k > 50) {} {
+            cout << "array provided is very large, cannot build heap" << endl;
+            return;
+        }
+        n = k;
+        for(int i = 1; i <= k; i++) {
+            arr[i] = a[i - 1];
+        }
+
+        for(int i = n/2; i >= 1; i--) {
+            heapifyDown(i);
+        }
+    }
 };
 
 class MaxHeap {
